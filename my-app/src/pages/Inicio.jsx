@@ -25,7 +25,7 @@ export default function Inicio() {
       </section>
 
       <section id="one" className="spotlight style1 bottom">
-        <span className="image fit main"><img src="/images/DSC_0108.jpg" alt="" /></span>
+        <span className="image fit main"><img src="/assets/images/DSC_0108.jpg" alt="auto" /></span>
         <div className="content">
           <div className="container">
             <div className="row">
@@ -48,7 +48,7 @@ export default function Inicio() {
       </section>
 
       <section id="two" className="spotlight style2 right">
-        <span className="image fit main"><img src="/images/64786f3d739a8300323b5f25.jpg" alt="" /></span>
+        <span className="image fit main"><img src="/assets/images/64786f3d739a8300323b5f25.jpg" alt="" /></span>
         <div className="content">
           <header>
             <h2>Asesoramiento personalizado</h2>

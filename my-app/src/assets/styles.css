@@ -1,46 +1,47 @@
-/* body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-}
-
-#banner {
+/* Asegura que las imágenes principales ocupen toda la pantalla */
+.image.fit.main {
   position: relative;
-  width: 100vw;
-  min-height: 70vh; 
-  background: url('images/Subaru_WRX_Imagenes_Web-22_copy_1.jpg') no-repeat center center/cover;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;     
-  color: white;
-  text-align: center;
+  display: block;
+  width: 100%;
+  height: 100vh; /* Hace que ocupe toda la altura visible */
   overflow: hidden;
-  margin: 0 auto;    
-
 }
 
-#banner .content {
+.image.fit.main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ajusta la imagen sin deformarla */
+  object-position: center; /* Centra la imagen */
+  display: block;
+}
+
+/* Evita que el texto se superponga mal en pantallas grandes */
+.spotlight {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.spotlight .content {
   position: relative;
   z-index: 2;
-  width: 100%;
-  max-width: 900px; 
-  margin: 0 auto;
-  padding: 48px 16px;
-  background: rgba(0,0,0,0.2); 
+  background: rgba(0, 0, 0, 0.4); /* Mantiene contraste si ya lo usabas */
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
 }
 
-.goto-next {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 3;
-  text-shadow: 0 4px 10px #000;
-} */
-
-
+/* Ajuste para pantallas medianas o pequeñas */
+@media (max-width: 980px) {
+  .image.fit.main {
+    height: 60vh;
+  }
+  .spotlight {
+    flex-direction: column;
+    min-height: auto;
+  }
+  .spotlight .content {
+    padding: 1rem;
+  }
+}

@@ -1,92 +1,138 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CarritoContext } from "../context/CarritoContext";
 
-export default function Formulario() {
-  const [usuario, setUsuario] = useState({
+const Formulario = () => {
+  const { setUsuario } = useContext(CarritoContext);
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
     nombre: "",
-    email: "",
+    correo: "",
     password: "",
+    confirmarPassword: "",
   });
-  const [mensaje, setMensaje] = useState("");
+
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setUsuario({ ...usuario, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:8081/usuarios/registrar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(usuario),
-      });
+    setError("");
 
-      const data = await res.json();
-      if (res.ok) {
-        setMensaje("✅ Registro exitoso. Ahora puedes iniciar sesión.");
-        setUsuario({ nombre: "", email: "", password: "" });
-      } else {
-        setMensaje("❌ " + (data.error || "Error al registrar usuario"));
-      }
-    } catch (error) {
-      setMensaje("⚠️ Error de conexión con el servidor");
-      console.error("Error:", error);
+    const { nombre, correo, password, confirmarPassword } = formData;
+
+    if (!nombre || !correo || !password || !confirmarPassword) {
+      setError("Todos los campos son obligatorios.");
+      return;
     }
+
+    if (password !== confirmarPassword) {
+      setError("Las contraseñas no coinciden.");
+      return;
+    }
+
+    // ✅ Guardar en localStorage
+    localStorage.setItem(
+      "usuarioRegistrado",
+      JSON.stringify({ nombre, correo, password })
+    );
+    setUsuario(nombre);
+    navigate("/");
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h2>Registro de Usuario</h2>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "inline-block",
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <div style={{ marginBottom: "10px" }}>
-          <label>Nombre:</label>
-          <br />
-          <input
-            type="text"
-            name="nombre"
-            value={usuario.nombre}
-            onChange={handleChange}
-            required
-          />
-        </div>
+    <div style={styles.container}>
+      <h2 style={styles.titulo}>Registro de Usuario</h2>
+      <form style={styles.form} onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="nombre"
+          placeholder="Nombre completo"
+          value={formData.nombre}
+          onChange={handleChange}
+          style={styles.input}
+        />
+        <input
+          type="email"
+          name="correo"
+          placeholder="Correo electrónico"
+          value={formData.correo}
+          onChange={handleChange}
+          style={styles.input}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          value={formData.password}
+          onChange={handleChange}
+          style={styles.input}
+        />
+        <input
+          type="password"
+          name="confirmarPassword"
+          placeholder="Confirmar contraseña"
+          value={formData.confirmarPassword}
+          onChange={handleChange}
+          style={styles.input}
+        />
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>Email:</label>
-          <br />
-          <input
-            type="email"
-            name="email"
-            value={usuario.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        {error && <p style={styles.error}>{error}</p>}
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>Contraseña:</label>
-          <br />
-          <input
-            type="password"
-            name="password"
-            value={usuario.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit">Registrar</button>
+        <button type="submit" style={styles.btn}>
+          Registrarse
+        </button>
       </form>
-
-      {mensaje && <p style={{ marginTop: "15px" }}>{mensaje}</p>}
     </div>
   );
-}
+};
+
+const styles = {
+  container: {
+    padding: "40px",
+    maxWidth: "400px",
+    margin: "40px auto",
+    backgroundColor: "#2c2c2c",
+    borderRadius: "12px",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+    textAlign: "center",
+    color: "#fff",
+  },
+  titulo: {
+    marginBottom: "20px",
+    fontSize: "1.8rem",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  input: {
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #555",
+    backgroundColor: "#3b3b3b",
+    color: "#fff",
+  },
+  btn: {
+    backgroundColor: "#27ae60",
+    color: "#fff",
+    border: "none",
+    padding: "10px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    marginTop: "10px",
+  },
+  error: {
+    color: "#e74c3c",
+    fontSize: "0.9rem",
+  },
+};
+
+export default Formulario;

@@ -1,112 +1,170 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import productosData from "../../data/dataProductos";
+import { CarritoContext } from "../context/CarritoContext";
 
-export default function Productos() {
-  const [productos, setProductos] = useState([]);
-  const [filtro, setFiltro] = useState("todos");
-  const [error, setError] = useState("");
+const Productos = () => {
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
+  const [mensaje, setMensaje] = useState(""); 
+  const { agregarAlCarrito, usuario } = useContext(CarritoContext);
 
-  useEffect(() => {
-    fetch("http://localhost:8081/productos")
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al cargar los productos");
-        return res.json();
-      })
-      .then((data) => setProductos(data))
-      .catch((error) => {
-        console.error("Error:", error);
-        setError("No se pudieron cargar los productos");
-      });
-  }, []);
+  const categorias = ["Todos", "Sedán", "SUV", "Deportivo"];
 
   const productosFiltrados =
-    filtro === "todos"
-      ? productos
-      : productos.filter((p) => p.categoria.toLowerCase() === filtro.toLowerCase());
+    categoriaSeleccionada === "Todos"
+      ? productosData
+      : productosData.filter((p) => p.categoria === categoriaSeleccionada);
+
+  const handleAgregar = (producto) => {
+    if (!usuario) {
+      alert("Debes iniciar sesión para agregar productos al carrito.");
+      return;
+    }
+    agregarAlCarrito(producto);
+    setMensaje(`${producto.marca} ${producto.modelo} agregado al carrito.`); // 🆕 Actualizar el mensaje
+  };
+
+  // 🆕 Ocultar el mensaje después de 3 segundos
+  useEffect(() => {
+    if (mensaje) {
+      const timer = setTimeout(() => {
+        setMensaje("");
+      }, 3000); // 3000 milisegundos = 3 segundos
+      return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
+    }
+  }, [mensaje]);
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "auto", padding: "20px" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Catálogo de Autos</h1>
+    <div style={styles.container}>
+      <h2>Catálogo de Autos</h2>
 
-      {/* Botones de filtro */}
-      <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginBottom: "30px" }}>
-        {["todos", "Sedán", "Deportivo", "SUV"].map((cat) => (
+      <div style={styles.filtros}>
+        {categorias.map((categoria) => (
           <button
-            key={cat}
-            onClick={() => setFiltro(cat)}
+            key={categoria}
+            onClick={() => setCategoriaSeleccionada(categoria)}
             style={{
-              padding: "10px 20px",
-              backgroundColor: filtro === cat ? "#007bff" : "#ddd",
-              color: filtro === cat ? "white" : "black",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontWeight: filtro === cat ? "bold" : "normal",
+              ...styles.boton,
+              backgroundColor:
+                categoriaSeleccionada === categoria ? "#333" : "#555",
             }}
           >
-            {cat}
+            {categoria}
           </button>
         ))}
       </div>
 
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+      {/* 🆕 Aquí se muestra el mensaje */}
+      {mensaje && <div style={styles.mensajeExito}>{mensaje}</div>}
 
-      {/* Contenedor de productos en filas de 3 */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          gap: "20px",
-        }}
-      >
+      <div style={styles.grid}>
         {productosFiltrados.map((p) => (
-          <div
-            key={p.id}
-            style={{
-              flex: "0 0 calc(33.333% - 20px)", // 3 por fila
-              border: "1px solid #ccc",
-              borderRadius: "10px",
-              overflow: "hidden",
-              textAlign: "center",
-              backgroundColor: "#fff",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-              transition: "transform 0.2s ease",
-            }}
-          >
-            <img
-              src={`/images/${p.imagen}`}
-              alt={`${p.marca} ${p.modelo}`}
-              style={{ width: "100%", height: "200px", objectFit: "cover" }}
-            />
-            <div style={{ padding: "15px" }}>
-              <h3 style={{ margin: "10px 0" }}>
-                {p.marca} {p.modelo} ({p.anio})
-              </h3>
-              <p style={{ fontSize: "14px", color: "#555" }}>{p.descripcion}</p>
-              <p style={{ fontWeight: "bold", color: "#007bff" }}>
-                ${Number(p.precio).toLocaleString("es-CL")}
-              </p>
-              <button
-                style={{
-                  marginTop: "10px",
-                  padding: "10px 15px",
-                  border: "none",
-                  backgroundColor: "#28a745",
-                  color: "white",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Agregar al carrito
-              </button>
-            </div>
+          <div key={p.id} style={styles.card}>
+            <img src={p.imagen} alt={p.modelo} style={styles.imagen} />
+            <h3 style={styles.nombre}>
+              {p.marca} {p.modelo}
+            </h3>
+            <p style={styles.precio}>${p.precio.toLocaleString("es-CL")}</p>
+            <button style={styles.btn} onClick={() => handleAgregar(p)}>
+              Agregar
+            </button>
           </div>
         ))}
       </div>
-
-      {productosFiltrados.length === 0 && !error && (
-        <p style={{ textAlign: "center", marginTop: "30px" }}>No hay productos disponibles.</p>
-      )}
     </div>
   );
-}
+};
+// 🎨 Estilos mantenidos (3x3, colores originales)
+const styles = {
+  container: {
+    padding: "30px",
+    textAlign: "center",
+    maxWidth: "1200px",
+    margin: "auto",
+  },
+  titulo: {
+    fontSize: "2rem",
+    marginBottom: "20px",
+    color: "#fff",
+  },
+  filtros: {
+    marginBottom: "25px",
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    flexWrap: "wrap",
+  },
+  boton: {
+    padding: "10px 15px",
+    border: "none",
+    borderRadius: "10px",
+    backgroundColor: "#555",
+    color: "#fff",
+    cursor: "pointer",
+    transition: "0.3s",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "25px",
+    justifyContent: "center",
+    justifyItems: "center",
+  },
+  card: {
+    backgroundColor: "#645c5cff",
+    borderRadius: "15px",
+    padding: "15px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+    textAlign: "center",
+    transition: "transform 0.2s, box-shadow 0.2s",
+    width: "100%",
+    maxWidth: "320px",
+  },
+  imagen: {
+    width: "100%",
+    height: "220px",
+    objectFit: "contain",
+    borderRadius: "10px",
+  },
+  nombre: {
+    marginTop: "10px",
+    fontWeight: "bold",
+    fontSize: "1.1rem",
+    color: "#fff",
+  },
+  descripcion: {
+    color: "#eaeaea",
+    fontSize: "0.9rem",
+  },
+  color: {
+    color: "#e5e5e5",
+    fontSize: "0.9rem",
+  },
+  precio: {
+    fontWeight: "bold",
+    color: "#e8edf0ff",
+    margin: "10px 0",
+  },
+  categoria: {
+    fontSize: "0.9rem",
+    color: "#ddd",
+  },
+  botonCarrito: {
+    marginTop: "10px",
+    padding: "10px 15px",
+    backgroundColor: "#4739389a",
+    border: "none",
+    borderRadius: "8px",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  },
+  "@media (max-width: 900px)": {
+    grid: { gridTemplateColumns: "repeat(2, 1fr)" },
+  },
+  "@media (max-width: 600px)": {
+    grid: { gridTemplateColumns: "1fr" },
+  },
+};
+
+export default Productos;
