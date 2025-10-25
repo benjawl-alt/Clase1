@@ -22,14 +22,24 @@ const Comprobante_pago = () => {
   }, []);
 
   const handleVolverInicio = () => {
-    // 🧹 Limpiar carrito y localStorage al volver al inicio
-    localStorage.removeItem("carrito");
-    localStorage.removeItem("total");
-    if (vaciarCarrito) vaciarCarrito();
-
-    navigate("/");
+  // 🧾 Guardar la compra en localStorage antes de vaciar
+  const comprasPrevias = JSON.parse(localStorage.getItem("compras")) || [];
+  const nuevaCompra = {
+    id: Date.now(),
+    total,
+    productos: carrito,
+    fecha: new Date().toISOString(),
+    cliente: datos.nombre || "Cliente",
   };
+  localStorage.setItem("compras", JSON.stringify([...comprasPrevias, nuevaCompra]));
 
+  // 🧹 Limpiar carrito y localStorage al volver al inicio
+  localStorage.removeItem("carrito");
+  localStorage.removeItem("total");
+  if (vaciarCarrito) vaciarCarrito();
+
+  navigate("/");
+};
   return (
     <div style={styles.container}>
       <h2>Comprobante de pago</h2>
@@ -73,11 +83,12 @@ const Comprobante_pago = () => {
       </p>
 
       <button style={styles.btnInicio} onClick={handleVolverInicio}>
-         Volver al inicio
+        Volver al inicio
       </button>
     </div>
   );
 };
+
 const styles = {
   container: {
     padding: "30px",

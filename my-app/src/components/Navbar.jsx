@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CarritoContext } from "../context/CarritoContext";
 
 export default function Navbar() {
   const { usuario, setUsuario, carrito } = useContext(CarritoContext);
+  const navigate = useNavigate();
 
   const total = carrito.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
@@ -13,6 +14,13 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("usuario");
     setUsuario("");
+  };
+
+  // 🆕 Redirigir solo si el usuario es "Administrador"
+  const handleAdminClick = () => {
+    if (usuario?.toLowerCase() === "administrador") {
+      navigate("/admin");
+    }
   };
 
   return (
@@ -35,9 +43,24 @@ export default function Navbar() {
 
         {usuario && (
           <div style={styles.user}>
-            <span>{usuario}</span>
-            <span style={styles.total}>
-            </span>
+            {/* 🆕 Botón invisible para el Administrador */}
+            <button
+              onClick={handleAdminClick}
+              style={{
+                ...styles.invisibleButton,
+                cursor:
+                  usuario?.toLowerCase() === "administrador"
+                    ? "pointer"
+                    : "default",
+              }}
+              title={
+                usuario?.toLowerCase() === "administrador"
+                  ? "Ir al panel de administración"
+                  : ""
+              }
+            >
+              {usuario}
+            </button>
             <button style={styles.btnLogout} onClick={handleLogout}>
               Cerrar sesión
             </button>

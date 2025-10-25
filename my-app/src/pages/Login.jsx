@@ -24,7 +24,7 @@ export default function Login() {
       setMensaje("---Bienvenido Administrador---");
       localStorage.setItem("usuarioActivo", "Administrador");
       setUsuario("Administrador");
-      setTimeout(() => navigate("/admin"), 1000); // redirige al panel admin
+      setTimeout(() => navigate("/"), 1000); // redirige al panel admin
       return;
     }
 

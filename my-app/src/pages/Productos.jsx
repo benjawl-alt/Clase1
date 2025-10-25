@@ -4,39 +4,63 @@ import { CarritoContext } from "../context/CarritoContext";
 
 const Productos = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
-  const [mensaje, setMensaje] = useState(""); 
+  const [mensaje, setMensaje] = useState("");
   const { agregarAlCarrito, usuario } = useContext(CarritoContext);
+  const [categorias, setCategorias] = useState(["Todos"]);
 
-  const categorias = ["Todos", "Sedán", "SUV", "Deportivo"];
+  // 🔁 Función para cargar las categorías desde localStorage
+  const cargarCategorias = () => {
+    const base = ["Sedán", "SUV", "Deportivo"];
+    const guardadas = JSON.parse(localStorage.getItem("categorias")) || [];
+    // 👇 Une ambas listas sin duplicar
+    const todas = Array.from(new Set([...base, ...guardadas]));
+    setCategorias(["Todos", ...todas]);
+  };
 
+  // 🧠 Cargar al montar + escuchar cambios
+  useEffect(() => {
+    cargarCategorias();
+
+    // Escuchar actualizaciones del admin
+    const handler = () => cargarCategorias();
+    window.addEventListener("categoriasActualizadas", handler);
+    window.addEventListener("storage", handler);
+
+    // Limpieza al desmontar
+    return () => {
+      window.removeEventListener("categoriasActualizadas", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
+
+  // 🧮 Filtrar productos según la categoría seleccionada
   const productosFiltrados =
     categoriaSeleccionada === "Todos"
       ? productosData
       : productosData.filter((p) => p.categoria === categoriaSeleccionada);
 
+  // 🛒 Agregar producto al carrito
   const handleAgregar = (producto) => {
     if (!usuario) {
       alert("Debes iniciar sesión para agregar productos al carrito.");
       return;
     }
     agregarAlCarrito(producto);
-    setMensaje(`${producto.marca} ${producto.modelo} agregado al carrito.`); // 🆕 Actualizar el mensaje
+    setMensaje(`${producto.marca} ${producto.modelo} agregado al carrito.`);
   };
 
-  // 🆕 Ocultar el mensaje después de 3 segundos
+  // 🕒 Quitar mensaje después de 2.5 segundos
   useEffect(() => {
-    if (mensaje) {
-      const timer = setTimeout(() => {
-        setMensaje("");
-      }, 3000); // 3000 milisegundos = 3 segundos
-      return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
-    }
+    if (!mensaje) return;
+    const timer = setTimeout(() => setMensaje(""), 2500);
+    return () => clearTimeout(timer);
   }, [mensaje]);
 
   return (
     <div style={styles.container}>
-      <h2>Catálogo de Autos</h2>
+      <h2 style={styles.titulo}>Catálogo de Autos</h2>
 
+      {/* 🔽 Filtros de categorías */}
       <div style={styles.filtros}>
         {categorias.map((categoria) => (
           <button
@@ -53,9 +77,9 @@ const Productos = () => {
         ))}
       </div>
 
-      {/* 🆕 Aquí se muestra el mensaje */}
       {mensaje && <div style={styles.mensajeExito}>{mensaje}</div>}
 
+      {/* 🧱 Grilla de productos */}
       <div style={styles.grid}>
         {productosFiltrados.map((p) => (
           <div key={p.id} style={styles.card}>
@@ -64,6 +88,7 @@ const Productos = () => {
               {p.marca} {p.modelo}
             </h3>
             <p style={styles.precio}>${p.precio.toLocaleString("es-CL")}</p>
+            <p style={styles.stock}>Stock disponible: {p.stock}</p>
             <button style={styles.btn} onClick={() => handleAgregar(p)}>
               Agregar
             </button>
@@ -73,7 +98,8 @@ const Productos = () => {
     </div>
   );
 };
-// 🎨 Estilos mantenidos (3x3, colores originales)
+
+// 🎨 Estilos visuales
 const styles = {
   container: {
     padding: "30px",
@@ -131,24 +157,16 @@ const styles = {
     fontSize: "1.1rem",
     color: "#fff",
   },
-  descripcion: {
-    color: "#eaeaea",
-    fontSize: "0.9rem",
-  },
-  color: {
-    color: "#e5e5e5",
-    fontSize: "0.9rem",
-  },
   precio: {
     fontWeight: "bold",
     color: "#e8edf0ff",
     margin: "10px 0",
   },
-  categoria: {
-    fontSize: "0.9rem",
+  stock: {
     color: "#ddd",
+    fontSize: "0.9rem",
   },
-  botonCarrito: {
+  btn: {
     marginTop: "10px",
     padding: "10px 15px",
     backgroundColor: "#4739389a",
@@ -158,12 +176,6 @@ const styles = {
     fontWeight: "bold",
     cursor: "pointer",
     transition: "all 0.3s ease",
-  },
-  "@media (max-width: 900px)": {
-    grid: { gridTemplateColumns: "repeat(2, 1fr)" },
-  },
-  "@media (max-width: 600px)": {
-    grid: { gridTemplateColumns: "1fr" },
   },
 };
 

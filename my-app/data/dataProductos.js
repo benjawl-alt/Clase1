@@ -8,7 +8,8 @@ const productos = [
     color: "Blanco",
     descripcion: "Auto económico y confiable.",
     categoria: "Sedán",
-    imagen: "./images/TOYOTA-corolla.jpg"
+    imagen: "./images/TOYOTA-corolla.jpg",
+    stock: 20,
   },
   {
     id: 2,
@@ -19,7 +20,8 @@ const productos = [
     color: "Negro",
     descripcion: "Sedán deportivo y eficiente.",
     categoria: "Sedán",
-    imagen: "./images/honda-civic-sedan-e-hev-2023.jpg"
+    imagen: "./images/honda-civic-sedan-e-hev-2023.jpg",
+    stock: 20,
   },
   {
     id: 3,
@@ -30,7 +32,8 @@ const productos = [
     color: "Blanco",
     descripcion: "Deportivo de alto rendimiento.",
     categoria: "Deportivo",
-    imagen: "./images/mustang.jpg"
+    imagen: "./images/mustang.jpg",
+    stock: 20,
   },
   {
     id: 4,
@@ -41,7 +44,8 @@ const productos = [
     color: "Verde",
     descripcion: "Sedán de lujo de alto rendimiento. Edición especial.",
     categoria: "Deportivo",
-    imagen: "./images/m3competicion.jpg"
+    imagen: "./images/m3competicion.jpg",
+    stock: 20,
   },
   {
     id: 5,
@@ -52,7 +56,8 @@ const productos = [
     color: "Gris",
     descripcion: "Superdeportivo de motor central con motor V10.",
     categoria: "Deportivo",
-    imagen: "./images/audir8.jpg"
+    imagen: "./images/audir8.jpg",
+    stock: 20,
   },
   {
     id: 6,
@@ -63,7 +68,8 @@ const productos = [
     color: "Azul",
     descripcion: "Sedán deportivo con tracción total y motor turbo.",
     categoria: "Deportivo",
-    imagen: "./images/wrx.jpg"
+    imagen: "./images/wrx.jpg",
+    stock: 20,
   },
   {
     id: 7,
@@ -74,7 +80,8 @@ const productos = [
     color: "Gris plata",
     descripcion: "SUV familiar con gran espacio y tecnología avanzada.",
     categoria: "SUV",
-    imagen: "./images/ford-explorer-2023-2-soymotor_1.jpg"
+    imagen: "./images/ford-explorer-2023-2-soymotor_1.jpg",
+    stock: 20,
   },
   {
     id: 8,
@@ -85,7 +92,8 @@ const productos = [
     color: "Café claro",
     descripcion: "SUV con diseño moderno y características de seguridad.",
     categoria: "SUV",
-    imagen: "./images/El-Nissan-X-Trail-2023-llega-a-Australia-con-el-sistema.jpg"
+    imagen: "./images/El-Nissan-X-Trail-2023-llega-a-Australia-con-el-sistema.jpg",
+    stock: 20,
   },
   {
   id: 9,
@@ -96,7 +104,8 @@ const productos = [
   color: "Blanco", // Color de ejemplo
   descripcion: "Sedán compacto con diseño futurista y tecnología avanzada.",
   categoria: "Sedán",
-  imagen: "./images/elantra1.jpg" // Asegúrate de tener la imagen localmente
+  imagen: "./images/elantra1.jpg", // Asegúrate de tener la imagen localmente
+  stock: 20,
 },
 {
   id: 10,
@@ -107,7 +116,8 @@ const productos = [
   color: "Gris", 
   descripcion: "SUV compacto con diseño audaz, espacioso interior y tecnología de vanguardia.",
   categoria: "SUV",
-  imagen: "./images/KIA-SPORTAGE-fhsdls.jpg" 
+  imagen: "./images/KIA-SPORTAGE-fhsdls.jpg" ,
+  stock: 20,
 },
 
 ];
