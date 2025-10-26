@@ -20,6 +20,7 @@ const Checkout = () => {
   const [touched, setTouched] = useState({});
   const [total, setTotal] = useState(0);
 
+  // 🧠 Cargar total y usuario al montar
   useEffect(() => {
     const totalGuardado = JSON.parse(localStorage.getItem("total")) || 0;
     const correoGuardado = localStorage.getItem("correo");
@@ -27,8 +28,8 @@ const Checkout = () => {
     setTotal(totalGuardado);
     setForm((prev) => ({
       ...prev,
-      nombre: usuario || "",
-      correo: correoGuardado || "",
+      nombre: usuario?.nombre || usuario || "",
+      correo: usuario?.email || correoGuardado || "",
     }));
   }, [usuario]);
 
@@ -42,26 +43,51 @@ const Checkout = () => {
     setTouched({ ...touched, [name]: true });
   };
 
+  // 💳 PAGAR
   const handlePagar = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const camposObligatorios = ["apellido", "calle", "region", "comuna"];
-  const faltantes = camposObligatorios.filter((campo) => !form[campo].trim());
+    const camposObligatorios = ["apellido", "calle", "region", "comuna"];
+    const faltantes = camposObligatorios.filter((campo) => !form[campo].trim());
 
-  if (faltantes.length > 0) {
-    const nuevosTouched = { ...touched };
-    faltantes.forEach((campo) => (nuevosTouched[campo] = true));
-    setTouched(nuevosTouched);
-    return;
-  }
+    if (faltantes.length > 0) {
+      const nuevosTouched = { ...touched };
+      faltantes.forEach((campo) => (nuevosTouched[campo] = true));
+      setTouched(nuevosTouched);
+      return;
+    }
 
-  localStorage.setItem("datosEntrega", JSON.stringify(form));
+    // Guardar dirección en localStorage
+    localStorage.setItem("datosEntrega", JSON.stringify(form));
 
-  navigate("/comprobante");
-};
+    // 🛒 Recuperar carrito actual
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const totalCompra = JSON.parse(localStorage.getItem("total")) || 0;
 
+    // 📦 Crear nueva compra
+    const nuevaCompra = {
+      id: Date.now(),
+      email: form.correo || "invitado@example.com",
+      nombre: form.nombre || "Invitado",
+      fecha: new Date().toLocaleString("es-CL"),
+      total: totalCompra,
+      items: carrito,
+    };
 
+    // 📋 Guardar en localStorage
+    const comprasPrevias = JSON.parse(localStorage.getItem("compras")) || [];
+    localStorage.setItem(
+      "compras",
+      JSON.stringify([...comprasPrevias, nuevaCompra])
+    );
 
+    // 🧹 Limpiar carrito
+    localStorage.removeItem("carrito");
+    localStorage.removeItem("total");
+
+    // ✅ Ir al comprobante
+    navigate("/comprobante");
+  };
 
   const mostrarError = (campo, label) => {
     if (touched[campo] && !form[campo].trim()) {

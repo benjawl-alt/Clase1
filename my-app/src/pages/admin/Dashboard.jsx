@@ -12,10 +12,14 @@ export default function Dashboard() {
     crecimiento: 0,
   });
 
+  const [mensajes, setMensajes] = useState([]);
+  const [mostrarReportes, setMostrarReportes] = useState(false);
+
   useEffect(() => {
     const productos = JSON.parse(localStorage.getItem("productos")) || [];
     const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
     const compras = JSON.parse(localStorage.getItem("compras")) || [];
+    const mensajesGuardados = JSON.parse(localStorage.getItem("mensajesContacto")) || [];
 
     const totalCompras = compras.reduce(
       (acc, compra) => acc + (compra.total || 0),
@@ -45,6 +49,8 @@ export default function Dashboard() {
       nuevosUsuarios,
       crecimiento,
     });
+
+    setMensajes(mensajesGuardados);
   }, []);
 
   return (
@@ -77,6 +83,37 @@ export default function Dashboard() {
           <p>Comparado con el mes pasado</p>
         </div>
       </div>
+
+      {/* 🔽 Botón para mostrar/ocultar reportes */}
+      <div style={{ marginTop: "30px", textAlign: "center" }}>
+        <button
+          className="btn-reportes"
+          onClick={() => setMostrarReportes(!mostrarReportes)}
+        >
+          {mostrarReportes ? "Ocultar reportes" : "Ver reportes de contacto"}
+        </button>
+      </div>
+
+      {/* 🧾 Sección de reportes */}
+      {mostrarReportes && (
+        <div className="reportes-container">
+          <h2>📨 Mensajes de contacto</h2>
+          {mensajes.length === 0 ? (
+            <p>No hay mensajes registrados.</p>
+          ) : (
+            <ul className="lista-mensajes">
+              {mensajes.map((m, i) => (
+                <li key={i} className="mensaje-card">
+                  <p><strong>📅 Fecha:</strong> {m.fecha}</p>
+                  <p><strong>👤 Nombre:</strong> {m.name}</p>
+                  <p><strong>📧 Correo:</strong> {m.email}</p>
+                  <p><strong>💬 Mensaje:</strong> {m.message}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 }

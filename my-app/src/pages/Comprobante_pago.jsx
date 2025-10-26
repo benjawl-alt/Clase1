@@ -9,40 +9,65 @@ const Comprobante_pago = () => {
   const { vaciarCarrito } = useContext(CarritoContext);
   const navigate = useNavigate();
 
+  // 🔹 Cargar los datos guardados desde localStorage una sola vez
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("carrito")) || [];
-    const totalGuardado = JSON.parse(localStorage.getItem("total")) || 0;
+    const carritoGuardado = JSON.parse(localStorage.getItem("carrito")) || [];
+    const totalGuardado = Number(localStorage.getItem("total")) || 0;
     const datosEntrega = JSON.parse(localStorage.getItem("datosEntrega")) || {};
 
-    console.log("🧾 Datos cargados:", { data, totalGuardado, datosEntrega });
+    console.log("🧾 Datos cargados:", { carritoGuardado, totalGuardado, datosEntrega });
 
-    setCarrito(data);
+    setCarrito(carritoGuardado);
     setTotal(totalGuardado);
     setDatos(datosEntrega);
   }, []);
 
+  // ✅ Guardar la compra (solo una vez)
   const handleVolverInicio = () => {
-  // 🧾 Guardar la compra en localStorage antes de vaciar
-  const comprasPrevias = JSON.parse(localStorage.getItem("compras")) || [];
-  const nuevaCompra = {
-    id: Date.now(),
-    total,
-    productos: carrito,
-    fecha: new Date().toISOString(),
-    cliente: datos.nombre || "Cliente",
+    if (carrito.length === 0 || total === 0) {
+      console.warn("🚫 No se puede guardar una compra vacía.");
+      navigate("/");
+      return;
+    }
+
+    const comprasPrevias = JSON.parse(localStorage.getItem("compras")) || [];
+
+    // 🔸 Estructura compatible con Ordenes.jsx
+    const nuevaCompra = {
+      id: Date.now(),
+      fecha: new Date().toLocaleString("es-CL"),
+      usuario: datos.nombre || "Cliente",
+      metodo: "Pago en línea",
+      total: total,
+      items: carrito.map((item) => ({
+        marca: item.marca,
+        modelo: item.modelo,
+        precio: item.precio,
+        cantidad: item.cantidad,
+      })),
+    };
+
+    // 🧾 Evitar duplicar compras
+    const comprasFiltradas = comprasPrevias.filter(
+      (c) => c.id !== nuevaCompra.id && c.total > 0 && c.items?.length > 0
+    );
+
+    // Guardar compra correcta
+    localStorage.setItem("compras", JSON.stringify([...comprasFiltradas, nuevaCompra]));
+
+    // 🧹 Limpiar datos temporales
+    localStorage.removeItem("carrito");
+    localStorage.removeItem("total");
+    localStorage.removeItem("datosEntrega");
+
+    if (vaciarCarrito) vaciarCarrito();
+
+    navigate("/");
   };
-  localStorage.setItem("compras", JSON.stringify([...comprasPrevias, nuevaCompra]));
 
-  // 🧹 Limpiar carrito y localStorage al volver al inicio
-  localStorage.removeItem("carrito");
-  localStorage.removeItem("total");
-  if (vaciarCarrito) vaciarCarrito();
-
-  navigate("/");
-};
   return (
     <div style={styles.container}>
-      <h2>Comprobante de pago</h2>
+      <h2>🧾 Comprobante de pago</h2>
       <p>
         Gracias por tu compra, <b>{datos.nombre || "Cliente"}</b>!
       </p>
@@ -61,7 +86,7 @@ const Comprobante_pago = () => {
         <p>No se encontró información del carrito.</p>
       )}
 
-      <h3>Total pagado: ${Number(total).toLocaleString("es-CL")}</h3>
+      <h3>Total pagado: ${total.toLocaleString("es-CL")}</h3>
 
       <h4>Datos de envío:</h4>
       {datos.calle ? (
@@ -89,6 +114,7 @@ const Comprobante_pago = () => {
   );
 };
 
+// 🎨 Estilos inline
 const styles = {
   container: {
     padding: "30px",
@@ -98,6 +124,16 @@ const styles = {
     backgroundColor: "#6a6b74ff",
     borderRadius: "12px",
     boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+    color: "white",
+  },
+  btnInicio: {
+    backgroundColor: "#007bff",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginTop: "20px",
   },
 };
 

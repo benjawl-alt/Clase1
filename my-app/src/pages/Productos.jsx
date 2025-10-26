@@ -7,37 +7,50 @@ const Productos = () => {
   const [mensaje, setMensaje] = useState("");
   const { agregarAlCarrito, usuario } = useContext(CarritoContext);
   const [categorias, setCategorias] = useState(["Todos"]);
+  const [productos, setProductos] = useState(productosData);
+
+  // 🧠 Cargar productos dinámicos desde localStorage
+  const cargarProductos = () => {
+    const guardados = JSON.parse(localStorage.getItem("productos")) || [];
+    // 🔁 Si no hay productos guardados, usa los de dataProductos
+    setProductos(guardados.length > 0 ? guardados : productosData);
+  };
 
   // 🔁 Función para cargar las categorías desde localStorage
   const cargarCategorias = () => {
     const base = ["Sedán", "SUV", "Deportivo"];
     const guardadas = JSON.parse(localStorage.getItem("categorias")) || [];
-    // 👇 Une ambas listas sin duplicar
     const todas = Array.from(new Set([...base, ...guardadas]));
     setCategorias(["Todos", ...todas]);
   };
 
-  // 🧠 Cargar al montar + escuchar cambios
+  // 🧩 useEffect principal — escucha actualizaciones del admin
   useEffect(() => {
+    cargarProductos();
     cargarCategorias();
 
-    // Escuchar actualizaciones del admin
-    const handler = () => cargarCategorias();
-    window.addEventListener("categoriasActualizadas", handler);
-    window.addEventListener("storage", handler);
+    const actualizar = () => {
+      cargarProductos();
+      cargarCategorias();
+    };
 
-    // Limpieza al desmontar
+    // 👂 Escuchar cambios cuando el admin edita productos o categorías
+    window.addEventListener("productosActualizados", actualizar);
+    window.addEventListener("categoriasActualizadas", actualizar);
+    window.addEventListener("storage", actualizar);
+
     return () => {
-      window.removeEventListener("categoriasActualizadas", handler);
-      window.removeEventListener("storage", handler);
+      window.removeEventListener("productosActualizados", actualizar);
+      window.removeEventListener("categoriasActualizadas", actualizar);
+      window.removeEventListener("storage", actualizar);
     };
   }, []);
 
   // 🧮 Filtrar productos según la categoría seleccionada
   const productosFiltrados =
     categoriaSeleccionada === "Todos"
-      ? productosData
-      : productosData.filter((p) => p.categoria === categoriaSeleccionada);
+      ? productos
+      : productos.filter((p) => p.categoria === categoriaSeleccionada);
 
   // 🛒 Agregar producto al carrito
   const handleAgregar = (producto) => {
@@ -81,25 +94,29 @@ const Productos = () => {
 
       {/* 🧱 Grilla de productos */}
       <div style={styles.grid}>
-        {productosFiltrados.map((p) => (
-          <div key={p.id} style={styles.card}>
-            <img src={p.imagen} alt={p.modelo} style={styles.imagen} />
-            <h3 style={styles.nombre}>
-              {p.marca} {p.modelo}
-            </h3>
-            <p style={styles.precio}>${p.precio.toLocaleString("es-CL")}</p>
-            <p style={styles.stock}>Stock disponible: {p.stock}</p>
-            <button style={styles.btn} onClick={() => handleAgregar(p)}>
-              Agregar
-            </button>
-          </div>
-        ))}
+        {productosFiltrados.length === 0 ? (
+          <p style={{ color: "#fff" }}>No hay productos en esta categoría.</p>
+        ) : (
+          productosFiltrados.map((p) => (
+            <div key={p.id} style={styles.card}>
+              <img src={p.imagen} alt={p.modelo} style={styles.imagen} />
+              <h3 style={styles.nombre}>
+                {p.marca} {p.modelo}
+              </h3>
+              <p style={styles.precio}>${p.precio.toLocaleString("es-CL")}</p>
+              <p style={styles.stock}>Stock disponible: {p.stock}</p>
+              <button style={styles.btn} onClick={() => handleAgregar(p)}>
+                Agregar
+              </button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
 };
 
-// 🎨 Estilos visuales
+// 🎨 Estilos visuales (idénticos)
 const styles = {
   container: {
     padding: "30px",

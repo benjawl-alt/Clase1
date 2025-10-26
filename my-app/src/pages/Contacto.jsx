@@ -62,7 +62,14 @@ export default function Contacto() {
       return;
     }
 
-    setEnviado(true);
+    const mensajesGuardados = JSON.parse(localStorage.getItem("mensajesContacto")) || [];
+mensajesGuardados.push({
+  ...formData,
+  fecha: new Date().toLocaleString("es-CL"),
+});
+localStorage.setItem("mensajesContacto", JSON.stringify(mensajesGuardados));
+
+setEnviado(true);
   };
 
   const handleReset = () => {
