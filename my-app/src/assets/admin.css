@@ -63,7 +63,7 @@
 .admin-main {
   margin-left: 240px; /* deja espacio solo para el sidebar */
   padding: 40px 50px;
-  background-color: #131722;
+  background-color: #1c1d26;
   color: #fff;
   min-height: 100vh;
   width: calc(100% - 240px); /* ocupa todo el resto */

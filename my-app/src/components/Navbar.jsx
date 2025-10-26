@@ -14,9 +14,10 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("usuario");
     setUsuario("");
+    navigate("/");
   };
 
-  // 🆕 Redirigir solo si el usuario es "Administrador"
+  // ✅ Ir al panel admin solo si el usuario es Administrador
   const handleAdminClick = () => {
     if (usuario?.toLowerCase() === "administrador") {
       navigate("/admin");
@@ -34,6 +35,7 @@ export default function Navbar() {
           <li><NavLink to="/nosotros">Nosotros</NavLink></li>
           <li><NavLink to="/contacto">Contacto</NavLink></li>
           <li><NavLink to="/formulario">Registro</NavLink></li>
+
           {!usuario && (
             <li>
               <NavLink to="/login">Iniciar Sesión</NavLink>
@@ -43,7 +45,7 @@ export default function Navbar() {
 
         {usuario && (
           <div style={styles.user}>
-            {/* 🆕 Botón invisible para el Administrador */}
+            {/* Botón de usuario → si es admin puede entrar al panel */}
             <button
               onClick={handleAdminClick}
               style={{
@@ -61,6 +63,8 @@ export default function Navbar() {
             >
               {usuario}
             </button>
+
+            {/* Botón de cerrar sesión */}
             <button style={styles.btnLogout} onClick={handleLogout}>
               Cerrar sesión
             </button>
@@ -100,11 +104,6 @@ const styles = {
     color: "#fff",
     whiteSpace: "nowrap",
   },
-  total: {
-    background: "#1c1d26",
-    padding: "6px 10px",
-    borderRadius: "8px",
-  },
   btnLogout: {
     background: "#e74c3c",
     border: "none",
@@ -112,5 +111,12 @@ const styles = {
     color: "#fff",
     padding: "6px 10px",
     cursor: "pointer",
+  },
+  invisibleButton: {
+    background: "none",
+    border: "none",
+    color: "#fff",
+    fontSize: "16px",
+    cursor: "default",
   },
 };

@@ -208,5 +208,118 @@ button:focus-visible {
   width: 100%;
   text-align: center;
 }
+/* Oculta el panel generado por main.js */
+#navPanel,
+#titleBar {
+  display: none !important;
+}
 
+/* ==== NAVBAR ==== */
+#header {
+  background: #1c1d26;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Logo texto */
+.logo-text {
+  color: #fff;
+  font-size: 20px;
+  margin: 0;
+}
+
+/* Navegación escritorio */
+.desktop-nav ul {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.desktop-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.desktop-nav a:hover {
+  color: #00bfff;
+}
+
+/* Botón hamburguesa */
+#menuToggle {
+  background: none;
+  border: 2px solid #fff;
+  color: #fff;
+  font-size: 24px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: none;
+}
+
+/* === PANEL LATERAL === */
+#navPanel {
+  position: fixed;
+  left: -260px;
+  top: 0;
+  width: 260px;
+  height: 100vh;
+  background: #1c1d26;
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 2000;
+  padding-top: 70px;
+}
+
+#navPanel.visible {
+  left: 0;
+}
+
+#navPanel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#navPanel a {
+  display: block;
+  color: #fff;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+#navPanel a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Fondo oscuro */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1500;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  #menuToggle {
+    display: block;
+  }
+}
 

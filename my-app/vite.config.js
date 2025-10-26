@@ -10,7 +10,7 @@ export default defineConfig({
     setupFiles: "__test__/setupTests.js",
     reporters: [
       "default",
-      ["json", { outputFile: "__test__/vitest-report.json" }], // ⬅️ reporte JSON
+      ["json", { outputFile: "__test__/vitest-report.json" }],
     ],
   },
 });

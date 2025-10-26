@@ -49,7 +49,7 @@ export default function Dashboard() {
 
   return (
     <div className="admin-dashboard">
-      <h1>📊 Dashboard</h1>
+      <h1> Dashboard</h1>
       <p>Resumen general de tu tienda</p>
 
       <div className="admin-cards">

@@ -12,23 +12,18 @@ export default function Login() {
   const manejarSubmit = (e) => {
     e.preventDefault();
 
-    // 💼 Credenciales de administrador
     const adminEmail = "admin@tienda.com";
     const adminPassword = "admin123";
-
-    // Recuperar usuario registrado del localStorage
     const usuarioGuardado = JSON.parse(localStorage.getItem("usuarioRegistrado"));
 
-    // 🧠 Verificar si el usuario es administrador
     if (email === adminEmail && password === adminPassword) {
       setMensaje("---Bienvenido Administrador---");
       localStorage.setItem("usuarioActivo", "Administrador");
       setUsuario("Administrador");
-      setTimeout(() => navigate("/"), 1000); // redirige al panel admin
+      setTimeout(() => navigate("/"), 1000);
       return;
     }
 
-    // 🧍‍♂️ Si no es admin, validar contra el usuario registrado
     if (!usuarioGuardado) {
       setMensaje("No hay usuarios registrados. Regístrate primero.");
       return;
@@ -49,8 +44,9 @@ export default function Login() {
       <h2>Iniciar Sesión</h2>
       <form onSubmit={manejarSubmit} noValidate>
         <div style={{ marginBottom: "15px" }}>
-          <label>Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -60,8 +56,9 @@ export default function Login() {
         </div>
 
         <div style={{ marginBottom: "15px" }}>
-          <label>Contraseña:</label>
+          <label htmlFor="password">Contraseña:</label>
           <input
+            id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
