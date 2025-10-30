@@ -20,7 +20,6 @@ export default function Contacto() {
       [e.target.name]: e.target.value,
     });
 
-    // Elimina el error al escribir
     setErrors({
       ...errors,
       [e.target.name]: "",
@@ -33,7 +32,6 @@ export default function Contacto() {
     const { name, email, message } = formData;
     let newErrors = {};
 
-    // Validaciones
     if (!name.trim()) newErrors.name = "Por favor, ingrese su nombre.";
     else if (name.length > 100)
       newErrors.name = "El nombre no puede superar los 100 caracteres.";
@@ -54,7 +52,6 @@ export default function Contacto() {
 
     setErrors(newErrors);
 
-    // Si hay errores, enfocar el primero
     if (Object.keys(newErrors).length > 0) {
       if (newErrors.name) nameRef.current.focus();
       else if (newErrors.email) emailRef.current.focus();
@@ -170,7 +167,6 @@ setEnviado(true);
   );
 }
 
-// 🎨 Estilos adaptados
 const styles = {
   container: {
     maxWidth: "600px",
