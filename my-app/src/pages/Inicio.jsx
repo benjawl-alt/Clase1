@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-scroll";
-import "../assets/styles.css"; // Asegúrate de importar tu CSS aquí
+import "../assets/styles.css"; 
 
 export default function Inicio() {
   return (
