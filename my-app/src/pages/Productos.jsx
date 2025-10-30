@@ -9,14 +9,12 @@ const Productos = () => {
   const [categorias, setCategorias] = useState(["Todos"]);
   const [productos, setProductos] = useState(productosData);
 
-  // 🧠 Cargar productos dinámicos desde localStorage
   const cargarProductos = () => {
     const guardados = JSON.parse(localStorage.getItem("productos")) || [];
-    // 🔁 Si no hay productos guardados, usa los de dataProductos
+    
     setProductos(guardados.length > 0 ? guardados : productosData);
   };
 
-  // 🔁 Función para cargar las categorías desde localStorage
   const cargarCategorias = () => {
     const base = ["Sedán", "SUV", "Deportivo"];
     const guardadas = JSON.parse(localStorage.getItem("categorias")) || [];
@@ -24,7 +22,6 @@ const Productos = () => {
     setCategorias(["Todos", ...todas]);
   };
 
-  // 🧩 useEffect principal — escucha actualizaciones del admin
   useEffect(() => {
     cargarProductos();
     cargarCategorias();
@@ -33,8 +30,6 @@ const Productos = () => {
       cargarProductos();
       cargarCategorias();
     };
-
-    // 👂 Escuchar cambios cuando el admin edita productos o categorías
     window.addEventListener("productosActualizados", actualizar);
     window.addEventListener("categoriasActualizadas", actualizar);
     window.addEventListener("storage", actualizar);
@@ -46,13 +41,11 @@ const Productos = () => {
     };
   }, []);
 
-  // 🧮 Filtrar productos según la categoría seleccionada
   const productosFiltrados =
     categoriaSeleccionada === "Todos"
       ? productos
       : productos.filter((p) => p.categoria === categoriaSeleccionada);
 
-  // 🛒 Agregar producto al carrito
   const handleAgregar = (producto) => {
     if (!usuario) {
       alert("Debes iniciar sesión para agregar productos al carrito.");
@@ -62,7 +55,6 @@ const Productos = () => {
     setMensaje(`${producto.marca} ${producto.modelo} agregado al carrito.`);
   };
 
-  // 🕒 Quitar mensaje después de 2.5 segundos
   useEffect(() => {
     if (!mensaje) return;
     const timer = setTimeout(() => setMensaje(""), 2500);
@@ -116,7 +108,6 @@ const Productos = () => {
   );
 };
 
-// 🎨 Estilos visuales (idénticos)
 const styles = {
   container: {
     padding: "30px",
