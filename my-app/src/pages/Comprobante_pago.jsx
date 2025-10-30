@@ -9,7 +9,6 @@ const Comprobante_pago = () => {
   const { vaciarCarrito } = useContext(CarritoContext);
   const navigate = useNavigate();
 
-  // 🔹 Cargar los datos guardados desde localStorage una sola vez
   useEffect(() => {
     const carritoGuardado = JSON.parse(localStorage.getItem("carrito")) || [];
     const totalGuardado = Number(localStorage.getItem("total")) || 0;
@@ -22,7 +21,6 @@ const Comprobante_pago = () => {
     setDatos(datosEntrega);
   }, []);
 
-  // ✅ Guardar la compra (solo una vez)
   const handleVolverInicio = () => {
     if (carrito.length === 0 || total === 0) {
       console.warn("🚫 No se puede guardar una compra vacía.");
@@ -32,7 +30,6 @@ const Comprobante_pago = () => {
 
     const comprasPrevias = JSON.parse(localStorage.getItem("compras")) || [];
 
-    // 🔸 Estructura compatible con Ordenes.jsx
     const nuevaCompra = {
       id: Date.now(),
       fecha: new Date().toLocaleString("es-CL"),
@@ -47,15 +44,12 @@ const Comprobante_pago = () => {
       })),
     };
 
-    // 🧾 Evitar duplicar compras
     const comprasFiltradas = comprasPrevias.filter(
       (c) => c.id !== nuevaCompra.id && c.total > 0 && c.items?.length > 0
     );
 
-    // Guardar compra correcta
     localStorage.setItem("compras", JSON.stringify([...comprasFiltradas, nuevaCompra]));
 
-    // 🧹 Limpiar datos temporales
     localStorage.removeItem("carrito");
     localStorage.removeItem("total");
     localStorage.removeItem("datosEntrega");
@@ -114,7 +108,6 @@ const Comprobante_pago = () => {
   );
 };
 
-// 🎨 Estilos inline
 const styles = {
   container: {
     padding: "30px",
