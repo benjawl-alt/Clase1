@@ -46,7 +46,6 @@ export default function UsuariosAdmin() {
     }
   };
 
-  // 🧾 Historial de compras del usuario
   const obtenerHistorial = (email) => {
     return compras.filter((c) => c.email === email);
   };
