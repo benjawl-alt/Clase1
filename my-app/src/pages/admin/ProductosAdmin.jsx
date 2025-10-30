@@ -16,19 +16,19 @@ export default function ProductosAdmin() {
   const [editando, setEditando] = useState(null);
   const [editado, setEditado] = useState({});
 
-  // 🧠 Cargar productos desde localStorage
+  
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("productos")) || [];
     setProductos(data);
   }, []);
 
-  // 💾 Guardar productos
+  
   const guardarEnLocalStorage = (lista) => {
     localStorage.setItem("productos", JSON.stringify(lista));
     window.dispatchEvent(new Event("productosActualizados"));
   };
 
-  // ➕ Agregar producto
+  
   const agregarProducto = () => {
     if (!nuevo.marca || !nuevo.modelo || !nuevo.precio) {
       alert("Completa al menos marca, modelo y precio.");
@@ -60,7 +60,6 @@ export default function ProductosAdmin() {
     });
   };
 
-  // 🗑️ Eliminar producto
   const eliminarProducto = (id) => {
     if (!window.confirm("¿Eliminar este producto?")) return;
     const nuevos = productos.filter((p) => p.id !== id);
@@ -68,7 +67,6 @@ export default function ProductosAdmin() {
     guardarEnLocalStorage(nuevos);
   };
 
-  // ✏️ Editar producto
   const iniciarEdicion = (p) => {
     setEditando(p.id);
     setEditado({ ...p });
@@ -215,7 +213,6 @@ export default function ProductosAdmin() {
   );
 }
 
-// 🎨 Estilos
 const styles = {
   container: {
     padding: "25px",
