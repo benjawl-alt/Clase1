@@ -36,13 +36,11 @@ const Formulario = () => {
       return;
     }
 
-    // ✅ Guardar usuario registrado actual (para login)
     localStorage.setItem(
       "usuarioRegistrado",
       JSON.stringify({ nombre, correo, password })
     );
 
-    // ✅ Guardar usuario nuevo en la lista global de usuarios (para el Admin)
     const usuariosPrevios = JSON.parse(localStorage.getItem("usuarios")) || [];
     const existe = usuariosPrevios.some((u) => u.correo === correo);
 
