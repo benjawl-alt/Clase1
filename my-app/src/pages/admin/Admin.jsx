@@ -19,12 +19,12 @@ import "../../assets/admin.css";
 export default function Admin() {
   const navigate = useNavigate();
 
-  // Datos crudos
+  
   const [compras, setCompras] = useState([]);
   const [productos, setProductos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
 
-  // Estadísticas calculadas
+  
   const [estadisticas, setEstadisticas] = useState({
     totalCompras: 0,
     totalIngresos: 0,
@@ -35,7 +35,7 @@ export default function Admin() {
   });
 
   useEffect(() => {
-    // Leer datos desde localStorage (si no existen, usar arrays vacíos)
+    
     const comprasData = JSON.parse(localStorage.getItem("compras")) || [];
     const productosData = JSON.parse(localStorage.getItem("productos")) || [];
     const usuariosData = JSON.parse(localStorage.getItem("usuarios")) || [];
@@ -44,7 +44,7 @@ export default function Admin() {
     setProductos(productosData);
     setUsuarios(usuariosData);
 
-    // Calcular totales
+    
     const totalCompras = comprasData.length;
     const totalIngresos = comprasData.reduce(
       (acc, compra) => acc + (compra.total || 0),
@@ -53,8 +53,7 @@ export default function Admin() {
     const totalProductos = productosData.length;
     const totalUsuarios = usuariosData.length;
 
-    // Para "aumento" (si no tienes dato histórico, mostramos un valor estimado)
-    // Si deseas usar datos reales mes a mes, almacena una estructura con fechas.
+    
     const aumentoCompras =
       totalCompras > 0 ? Math.floor(Math.random() * 30) : 0;
     const aumentoUsuarios =
