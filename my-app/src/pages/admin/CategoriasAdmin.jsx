@@ -7,15 +7,15 @@ export default function CategoriasAdmin() {
   const [editando, setEditando] = useState(null);
   const [valorEditado, setValorEditado] = useState("");
 
-  // 🧠 Cargar categorías desde localStorage al iniciar
+  
   useEffect(() => {
     const guardadas = JSON.parse(localStorage.getItem("categorias")) || [];
-    // ✅ Combina las base + guardadas sin duplicar
+    
     const todas = Array.from(new Set([...baseCategorias, ...guardadas]));
     setCategorias(todas);
   }, []);
 
-  // 💾 Guardar solo las personalizadas (sin las base)
+  
   const guardarEnLocalStorage = (lista) => {
     const personalizadas = lista.filter((c) => !baseCategorias.includes(c));
     localStorage.setItem("categorias", JSON.stringify(personalizadas));
@@ -23,7 +23,7 @@ export default function CategoriasAdmin() {
     window.dispatchEvent(new Event("categoriasActualizadas"));
   };
 
-  // ➕ Agregar nueva categoría
+ 
   const agregarCategoria = () => {
     const nombre = nuevaCategoria.trim();
     if (!nombre) return;
@@ -35,7 +35,7 @@ export default function CategoriasAdmin() {
     setNuevaCategoria("");
   };
 
-  // 🗑️ Eliminar una categoría (excepto las base)
+  
   const eliminarCategoria = (nombre) => {
     if (baseCategorias.includes(nombre)) {
       alert("No puedes eliminar una categoría base.");
@@ -46,7 +46,7 @@ export default function CategoriasAdmin() {
     guardarEnLocalStorage(nuevas);
   };
 
-  // ✏️ Editar nombre de categoría
+  
   const iniciarEdicion = (index, valor) => {
     if (baseCategorias.includes(valor)) {
       alert("No puedes editar una categoría base.");
