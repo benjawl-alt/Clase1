@@ -20,7 +20,6 @@ const Checkout = () => {
   const [touched, setTouched] = useState({});
   const [total, setTotal] = useState(0);
 
-  // 🧠 Cargar total y usuario al montar
   useEffect(() => {
     const totalGuardado = JSON.parse(localStorage.getItem("total")) || 0;
     const correoGuardado = localStorage.getItem("correo");
@@ -43,7 +42,6 @@ const Checkout = () => {
     setTouched({ ...touched, [name]: true });
   };
 
-  // 💳 PAGAR
   const handlePagar = (e) => {
     e.preventDefault();
 
@@ -57,14 +55,11 @@ const Checkout = () => {
       return;
     }
 
-    // Guardar dirección en localStorage
     localStorage.setItem("datosEntrega", JSON.stringify(form));
 
-    // 🛒 Recuperar carrito actual
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const totalCompra = JSON.parse(localStorage.getItem("total")) || 0;
 
-    // 📦 Crear nueva compra
     const nuevaCompra = {
       id: Date.now(),
       email: form.correo || "invitado@example.com",
@@ -74,18 +69,15 @@ const Checkout = () => {
       items: carrito,
     };
 
-    // 📋 Guardar en localStorage
     const comprasPrevias = JSON.parse(localStorage.getItem("compras")) || [];
     localStorage.setItem(
       "compras",
       JSON.stringify([...comprasPrevias, nuevaCompra])
     );
 
-    // 🧹 Limpiar carrito
     localStorage.removeItem("carrito");
     localStorage.removeItem("total");
 
-    // ✅ Ir al comprobante
     navigate("/comprobante");
   };
 
