@@ -19,7 +19,7 @@ export default function CategoriasAdmin() {
   const guardarEnLocalStorage = (lista) => {
     const personalizadas = lista.filter((c) => !baseCategorias.includes(c));
     localStorage.setItem("categorias", JSON.stringify(personalizadas));
-    // 🔔 Notifica a otros componentes
+    
     window.dispatchEvent(new Event("categoriasActualizadas"));
   };
 
